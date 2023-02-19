@@ -1,7 +1,9 @@
 import { ethers } from "hardhat";
 import { Usdt__factory } from "../types/ethers-contracts";
+import { pino } from "pino";
 
 async function main() {
+  const logger = pino();
   const [owner] = await ethers.getSigners();
   // on polygon
   const uc = await Usdt__factory.connect(
@@ -10,7 +12,7 @@ async function main() {
   );
   const d = await uc.decimals();
   uc.on(uc.filters.Transfer(), (from, to, value) => {
-    console.log(
+    logger.info(
       `Uc transfer event: from:${from} to:${to} value:${value
         .div(d)
         .toNumber()
